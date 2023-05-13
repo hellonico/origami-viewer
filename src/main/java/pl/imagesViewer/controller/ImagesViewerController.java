@@ -86,7 +86,7 @@ public class ImagesViewerController {
     private StackPane imageHolder;
 
     @FXML
-    private javafx.scene.control.TextField filterPath = new javafx.scene.control.TextField("/Users/niko/Desktop/filters.edn");
+    private javafx.scene.control.TextField filterPath = new javafx.scene.control.TextField("/home/niko/Desktop/filters.edn");
 
     @FXML
     private void initialize() {
@@ -261,7 +261,7 @@ public class ImagesViewerController {
     private void updateImage() {
         ImageVO vo = imagesList.getSelectionModel().getSelectedItem();
         Filter f = new Filters.NoOP();
-        Origami.StringToFilter(filterPath.getText());
+        f = Origami.StringToFilter(filterPath.getText());
         Image image = Utils.magic(vo.getFullPath(), f);
         imageView.setImage(image);
         imageView.setFitWidth(image.getWidth());

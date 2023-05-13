@@ -27,6 +27,25 @@
         <finalName>imagesViewer</finalName>
 
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>pl.imagesViewer.ImagesViewerApp</mainClass>
+                    <!-- <arguments>
+                <argument>foo</argument>
+                <argument>bar</argument>
+              </arguments> -->
+                </configuration>
+            </plugin>
 
 <!--            <plugin>-->
 <!--                <groupId>com.zenjava</groupId>-->

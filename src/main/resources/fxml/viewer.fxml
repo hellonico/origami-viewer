@@ -23,7 +23,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <TextField fx:id="filterPath" prefWidth="250" text="/Users/niko/Desktop/filters.edn">
+            <TextField fx:id="filterPath" prefWidth="250" text="/home/niko/Desktop/filters.edn">
                <HBox.margin>
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>
