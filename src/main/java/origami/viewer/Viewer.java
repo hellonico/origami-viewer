@@ -1,4 +1,4 @@
-package pl.imagesViewer;
+package origami.viewer;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ import origami.Origami;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class ImagesViewerApp extends Application {
+public class Viewer extends Application {
 
     public static void main(String[] args) throws Exception {
         Origami.init();

@@ -1,9 +1,9 @@
-package pl.imagesViewer.dataProvider;
+package origami.viewer.dataProvider;
 
 import java.util.Collection;
 
-import pl.imagesViewer.dataProvider.data.ImageVO;
-import pl.imagesViewer.dataProvider.impl.DataProviderImpl;
+import origami.viewer.dataProvider.data.ImageVO;
+import origami.viewer.dataProvider.impl.DataProviderImpl;
 
 public interface DataProvider {
     DataProvider INSTANCE = new DataProviderImpl();

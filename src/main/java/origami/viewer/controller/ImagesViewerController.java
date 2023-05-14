@@ -1,4 +1,4 @@
-package pl.imagesViewer.controller;
+package origami.viewer.controller;
 
 
 import javafx.animation.AnimationTimer;
@@ -31,12 +31,11 @@ import origami.Filter;
 import origami.Filters;
 import origami.Origami;
 import origami.utils.FileWatcher;
-import pl.imagesViewer.Utils;
-import pl.imagesViewer.dataProvider.DataProvider;
-import pl.imagesViewer.dataProvider.data.ImageVO;
-import pl.imagesViewer.model.FileModel;
+import origami.viewer.Utils;
+import origami.viewer.dataProvider.DataProvider;
+import origami.viewer.dataProvider.data.ImageVO;
+import origami.viewer.model.FileModel;
 
-import java.awt.TextField;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -86,10 +85,11 @@ public class ImagesViewerController {
     private StackPane imageHolder;
 
     @FXML
-    private javafx.scene.control.TextField filterPath = new javafx.scene.control.TextField("/home/niko/Desktop/filters.edn");
+    private javafx.scene.control.TextField filterPath = new javafx.scene.control.TextField();
 
     @FXML
     private void initialize() {
+        filterPath.setText(System.getProperty("user.home")+"/Desktop/filters.edn");
         new MyFileWatcher(new File(filterPath.getText())).start();
         installKeyHandlers();
         initializeImagesList();
@@ -240,6 +240,17 @@ public class ImagesViewerController {
         });
     }
 
+    public void exportJPGButtonAction(ActionEvent actionEvent) {
+        Utils.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "jpg", null);
+    }
+
+    public void exportPNGButtonAction(ActionEvent actionEvent) {
+        Utils.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png", null);
+    }
+
+    public void exportAll(ActionEvent actionEvent) {
+        Utils.exportAll(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png");
+    }
 
     public class MyFileWatcher extends FileWatcher {
         public MyFileWatcher(File watchFile) {

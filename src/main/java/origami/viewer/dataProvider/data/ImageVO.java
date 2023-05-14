@@ -1,4 +1,4 @@
-package pl.imagesViewer.dataProvider.data;
+package origami.viewer.dataProvider.data;
 
 import java.io.File;
 
