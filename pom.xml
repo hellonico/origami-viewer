@@ -131,7 +131,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>origami</artifactId>
-            <version>4.7.0-6</version>
+            <version>4.7.0-7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
@@ -142,7 +142,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>filters</artifactId>
-            <version>1.34</version>
+            <version>1.35</version>
         </dependency>
 
 <!--        <dependency>-->

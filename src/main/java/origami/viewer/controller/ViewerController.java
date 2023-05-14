@@ -27,21 +27,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
-import origami.Filter;
-import origami.Filters;
-import origami.Origami;
+import origami.*;
 import origami.utils.FileWatcher;
-import origami.viewer.Utils;
 import origami.viewer.dataProvider.DataProvider;
 import origami.viewer.dataProvider.data.ImageVO;
 import origami.viewer.model.FileModel;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-public class ImagesViewerController {
+public class ViewerController {
 
     private final DataProvider dataProvider = DataProvider.INSTANCE;
     private FileModel model = new FileModel();
@@ -86,11 +84,13 @@ public class ImagesViewerController {
 
     @FXML
     private javafx.scene.control.TextField filterPath = new javafx.scene.control.TextField();
+    private MyFileWatcher mywatcher;
 
     @FXML
     private void initialize() {
-        filterPath.setText(System.getProperty("user.home")+"/Desktop/filters.edn");
-        new MyFileWatcher(new File(filterPath.getText())).start();
+        filterPath.setText(System.getProperty("user.home") + "/Desktop/filters.edn");
+        mywatcher = new MyFileWatcher(new File(filterPath.getText()));
+        mywatcher.start();
         installKeyHandlers();
         initializeImagesList();
         imagesList.itemsProperty().bind(model.resultProperty());
@@ -223,7 +223,7 @@ public class ImagesViewerController {
                     setGraphic(null);
                 } else {
                     String path = image.getFullPath();
-                    imageView.setImage(Utils.magic(path));
+                    imageView.setImage(OrigamiFX.magic(path));
                     setGraphic(imageView);
                 }
             }
@@ -241,15 +241,37 @@ public class ImagesViewerController {
     }
 
     public void exportJPGButtonAction(ActionEvent actionEvent) {
-        Utils.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "jpg", null);
+        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "jpg", null);
     }
 
     public void exportPNGButtonAction(ActionEvent actionEvent) {
-        Utils.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png", null);
+        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png", null);
     }
 
     public void exportAll(ActionEvent actionEvent) {
-        Utils.exportAll(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png");
+        OrigamiFX.exportAll(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png");
+    }
+
+    public void openFilters(ActionEvent actionEvent) {
+        try {
+            File filterFile = new File(filterPath.getText());
+            if (!filterFile.exists()) {
+                FindFilters.generateEDNWithAllFilters(filterPath.getText());
+            }
+            Desktop.getDesktop().open(filterFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateFilterPath(KeyEvent actionEvent) {
+        updateImage();
+        if (mywatcher != null) {
+            mywatcher.stopThread();
+        }
+        mywatcher = new MyFileWatcher(new File(filterPath.getText()));
+        mywatcher.start();
+
     }
 
     public class MyFileWatcher extends FileWatcher {
@@ -259,24 +281,17 @@ public class ImagesViewerController {
 
         @Override
         public void doOnChange() {
-            try {
-                updateImage();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
+            updateImage();
         }
 
     }
 
     private void updateImage() {
         ImageVO vo = imagesList.getSelectionModel().getSelectedItem();
-        Filter f = new Filters.NoOP();
-        f = Origami.StringToFilter(filterPath.getText());
-        Image image = Utils.magic(vo.getFullPath(), f);
+        Filter f = Origami.StringToFilter(filterPath.getText());
+        Image image = OrigamiFX.magic(vo.getFullPath(), f);
         imageView.setImage(image);
-        imageView.setFitWidth(image.getWidth());
-        imageView.setFitHeight(image.getHeight());
+        imageView.setPreserveRatio(true);
         initializeZoom();
     }
 
