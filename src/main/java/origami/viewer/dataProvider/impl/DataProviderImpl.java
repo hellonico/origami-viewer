@@ -1,4 +1,4 @@
-package pl.imagesViewer.dataProvider.impl;
+package origami.viewer.dataProvider.impl;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import pl.imagesViewer.dataProvider.DataProvider;
-import pl.imagesViewer.dataProvider.data.ImageVO;
+import origami.viewer.dataProvider.DataProvider;
+import origami.viewer.dataProvider.data.ImageVO;
 
 public class DataProviderImpl implements DataProvider {
 

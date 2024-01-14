@@ -1,4 +1,4 @@
-package pl.imagesViewer.model;
+package origami.viewer.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import pl.imagesViewer.dataProvider.data.ImageVO;
+import origami.viewer.dataProvider.data.ImageVO;
 
 public class FileModel {
     private final StringProperty directory = new SimpleStringProperty("");
