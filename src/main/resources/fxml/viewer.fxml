@@ -1,88 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="gridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-          minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.51"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="origami.viewer.controller.ImagesViewerController">
+<GridPane fx:id="gridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="origami.viewer.controller.ViewerController">
    <columnConstraints>
-      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" valignment="CENTER" vgrow="NEVER"/>
-      <RowConstraints minHeight="400.0" prefHeight="400.0" valignment="CENTER" vgrow="ALWAYS"/>
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="150.0" valignment="CENTER" vgrow="NEVER"/>
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" valignment="CENTER" vgrow="NEVER" />
+      <RowConstraints minHeight="400.0" prefHeight="400.0" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="150.0" valignment="CENTER" vgrow="NEVER" />
    </rowConstraints>
-   <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0"
-         prefWidth="200.0">
+   <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0">
       <Button fx:id="browseButton" mnemonicParsing="false" onAction="#browseButtonAction" text="%button.browse">
          <HBox.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
          </HBox.margin>
       </Button>
       <Button mnemonicParsing="false" onAction="#exportPNGButtonAction" text="%button.exportPNG">
          <HBox.margin>
-            <Insets left="5.0"/>
+            <Insets left="5.0" />
          </HBox.margin>
       </Button>
       <Button mnemonicParsing="false" onAction="#exportJPGButtonAction" text="%button.exportJPG">
          <HBox.margin>
-            <Insets left="5.0"/>
+            <Insets left="5.0" />
          </HBox.margin>
       </Button>
       <Button mnemonicParsing="false" onAction="#exportAll" text="%button.exportALL">
          <HBox.margin>
-            <Insets left="5.0"/>
+            <Insets left="5.0" />
          </HBox.margin>
       </Button>
-      <TextField fx:id="filterPath" prefWidth="250">
+      <Button mnemonicParsing="false" onAction="#openFilters" text="%button.filters">
          <HBox.margin>
-            <Insets left="10.0" right="10.0"/>
+            <Insets left="5.0" />
+         </HBox.margin>
+      </Button>
+      <TextField fx:id="filterPath" onKeyReleased="#updateFilterPath" prefWidth="250">
+         <HBox.margin>
+            <Insets left="10.0" right="10.0" />
          </HBox.margin>
       </TextField>
-      <Label text="%label.directory"/>
+      <Label text="%label.directory" />
       <Label fx:id="directoryLabel" text="DirectoryPath" visible="false">
          <HBox.margin>
-            <Insets left="10.0"/>
+            <Insets left="10.0" />
          </HBox.margin>
       </Label>
 
    </HBox>
    <VBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="150.0" prefWidth="100.0" GridPane.rowIndex="2">
-      <ListView fx:id="imagesList" editable="true" maxHeight="-Infinity" maxWidth="1.7976931348623157E308"
-                minHeight="-Infinity" orientation="HORIZONTAL" prefHeight="100.0" prefWidth="400.0" visible="false"/>
-      <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0"
-            prefWidth="400.0">
-         <Button fx:id="previousButton" disable="true" mnemonicParsing="false" onAction="#previousButtonAction"
-                 text="&lt;">
+      <ListView fx:id="imagesList" editable="true" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" orientation="HORIZONTAL" prefHeight="100.0" prefWidth="400.0" visible="false" />
+      <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="400.0">
+         <Button fx:id="previousButton" disable="true" mnemonicParsing="false" onAction="#previousButtonAction" text="&lt;">
             <HBox.margin>
-               <Insets right="25.0"/>
+               <Insets right="25.0" />
             </HBox.margin>
          </Button>
-         <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" disable="true"
-                 mnemonicParsing="false" onAction="#playButtonAction" text="%button.play">
+         <Button fx:id="playButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#playButtonAction" text="%button.play">
             <HBox.margin>
-               <Insets/>
+               <Insets />
             </HBox.margin>
          </Button>
-         <Button fx:id="nextButton" disable="true" mnemonicParsing="false" onAction="#nextButtonAction"
-                 text="&gt;">
+         <Button fx:id="nextButton" disable="true" mnemonicParsing="false" onAction="#nextButtonAction" text="&gt;">
             <HBox.margin>
-               <Insets left="25.0"/>
+               <Insets left="25.0" />
             </HBox.margin>
          </Button>
       </HBox>
    </VBox>
-   <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="400.0"
-               prefWidth="400.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"
-               GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+   <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="400.0" prefWidth="400.0" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
       <StackPane fx:id="imageHolder" prefHeight="150.0" prefWidth="200.0">
-         <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true"
-                    StackPane.alignment="CENTER"/>
+         <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
       </StackPane>
    </ScrollPane>
 </GridPane>

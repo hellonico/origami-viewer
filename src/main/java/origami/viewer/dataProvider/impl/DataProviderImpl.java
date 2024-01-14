@@ -12,7 +12,7 @@ import origami.viewer.dataProvider.data.ImageVO;
 
 public class DataProviderImpl implements DataProvider {
 
-    private final Collection<String> imagesExtensions = Arrays.asList("jpg", "png", "gif");
+    private final Collection<String> imagesExtensions = Arrays.asList("webp","jpg", "png", "gif");
     
     @Override
     public Collection<ImageVO> getImages(String directoryPath) {
