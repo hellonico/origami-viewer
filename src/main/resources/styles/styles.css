@@ -1,4 +1,7 @@
 /* Application wide styles */
+body {
+    background-color: white;
+}
 
 .label {
     -fx-font-size: 12px;
