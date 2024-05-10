@@ -5,3 +5,4 @@ target/
 src/main/deploy/
 .idea
 dependency-reduced-pom.xml
+dist/
