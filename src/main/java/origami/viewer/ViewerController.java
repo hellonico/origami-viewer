@@ -1,4 +1,4 @@
-package origami.viewer.controller;
+package origami.viewer;
 
 
 import javafx.animation.AnimationTimer;
@@ -27,27 +27,28 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
-import origami.*;
+import origami.Filter;
+import origami.FindFilters;
+import origami.Origami;
+import origami.OrigamiFX;
 import origami.utils.FileWatcher;
-import origami.viewer.dataProvider.DataProvider;
-import origami.viewer.dataProvider.data.ImageVO;
-import origami.viewer.model.FileModel;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ViewerController {
 
-    private final DataProvider dataProvider = DataProvider.INSTANCE;
-    private FileModel model = new FileModel();
+    private final ImagesCollector imagesCollector = new ImagesCollector();
+    private ImagesDirectory model = new ImagesDirectory();
     private Timeline timeline;
     private AnimationTimer timer;
     private boolean slideShowOn = false;
     private DoubleProperty zoomProperty;
-
 
     @FXML
     private ResourceBundle resources;
@@ -71,7 +72,7 @@ public class ViewerController {
     private Label directoryLabel;
 
     @FXML
-    private ListView<ImageVO> imagesList;
+    private ListView<File> imagesList;
 
     @FXML
     private GridPane gridPane;
@@ -206,7 +207,7 @@ public class ViewerController {
     }
 
     private void initializeImagesList() {
-        imagesList.setCellFactory(listView -> new ListCell<ImageVO>() {
+        imagesList.setCellFactory(listView -> new ListCell<File>() {
             private final ImageView imageView = new ImageView();
 
             {
@@ -216,21 +217,21 @@ public class ViewerController {
             }
 
             @Override
-            public void updateItem(ImageVO image, boolean empty) {
+            public void updateItem(File image, boolean empty) {
                 super.updateItem(image, empty);
                 if (empty) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String path = image.getFullPath();
+                    String path = image.getAbsolutePath();
                     imageView.setImage(OrigamiFX.magic(path));
                     setGraphic(imageView);
                 }
             }
         });
-        imagesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ImageVO>() {
+        imagesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<File>() {
             @Override
-            public void changed(ObservableValue<? extends ImageVO> observable, ImageVO oldValue, ImageVO newValue) {
+            public void changed(ObservableValue<? extends File> observable, File oldValue, File newValue) {
                 if (newValue == null) {
                     return;
                 }
@@ -241,37 +242,43 @@ public class ViewerController {
     }
 
     public void exportJPGButtonAction(ActionEvent actionEvent) {
-        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "jpg", null);
+        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getAbsolutePath(), filterPath.getText(), "jpg", null);
     }
 
     public void exportPNGButtonAction(ActionEvent actionEvent) {
-        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png", null);
+        OrigamiFX.export(imagesList.getSelectionModel().getSelectedItem().getAbsolutePath(), filterPath.getText(), "png", null);
     }
 
     public void exportAll(ActionEvent actionEvent) {
-        OrigamiFX.exportAll(imagesList.getSelectionModel().getSelectedItem().getFullPath(), filterPath.getText(), "png");
+        OrigamiFX.exportAll(imagesList.getSelectionModel().getSelectedItem().getAbsolutePath(), filterPath.getText(), "png");
     }
+
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void openFilters(ActionEvent actionEvent) {
         try {
             File filterFile = new File(filterPath.getText());
             if (!filterFile.exists()) {
-                FindFilters.generateEDNWithAllFilters(filterPath.getText());
+                executorService.execute(() -> {
+                    FindFilters.generateEDNWithAllFilters(filterPath.getText());
+                });
             }
-            Desktop.getDesktop().open(filterFile);
-        } catch (IOException e) {
+
+            OrigamiFX.desktopOpenFile(filterPath.getText());
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void updateFilterPath(KeyEvent actionEvent) {
-        updateImage();
+
         if (mywatcher != null) {
             mywatcher.stopThread();
         }
         mywatcher = new MyFileWatcher(new File(filterPath.getText()));
         mywatcher.start();
-
+        updateImage();
     }
 
     public class MyFileWatcher extends FileWatcher {
@@ -287,20 +294,24 @@ public class ViewerController {
     }
 
     private void updateImage() {
-        ImageVO vo = imagesList.getSelectionModel().getSelectedItem();
+        File vo = imagesList.getSelectionModel().getSelectedItem();
+        if(vo == null) {
+            // no image loaded
+            return;
+        }
         Filter f = Origami.StringToFilter(filterPath.getText());
-        Image image = OrigamiFX.magic(vo.getFullPath(), f);
+        Image image = OrigamiFX.magic(vo.getAbsolutePath(), f);
         imageView.setImage(image);
         imageView.setPreserveRatio(true);
         initializeZoom();
     }
 
     private void updateImagesList() {
-        Task<Collection<ImageVO>> getImagesTask = new Task<Collection<ImageVO>>() {
+        Task<Collection<File>> getImagesTask = new Task<Collection<File>>() {
 
             @Override
-            protected Collection<ImageVO> call() throws Exception {
-                return dataProvider.getImages(model.getDirectory());
+            protected Collection<File> call() throws Exception {
+                return imagesCollector.getImages(model.getDirectory());
             }
 
             @Override
